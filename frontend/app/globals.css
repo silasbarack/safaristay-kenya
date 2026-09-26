@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-sand font-sans text-ink antialiased;
+  }
+}
+
+@layer components {
+  .ss-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-forest-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-forest-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-500;
+  }
+  .ss-btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-900;
+  }
+  .ss-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-gold-700;
+  }
+  .ss-container {
+    @apply mx-auto max-w-container px-4 sm:px-6;
+  }
+  .ss-input {
+    @apply w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-gold-500 focus:ring-2 focus:ring-gold-200;
+  }
+}
