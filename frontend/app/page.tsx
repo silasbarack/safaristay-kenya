@@ -43,7 +43,7 @@ export default function HomePage() {
           </div>
           <div className="relative mx-auto w-full max-w-xl">
             <Image
-              src="/brand/safaristay-kenya-logo.png"
+              src="/brand/safaristay-kenya-logo-1080.jpg"
               alt=""
               width={1080}
               height={721}
