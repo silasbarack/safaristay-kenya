@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Check, MapPin, Star, Users } from 'lucide-react';
-import StayArt from '@/components/StayArt';
+import StayPhoto from '@/components/StayPhoto';
 import { formatKes, getStay, stays } from '@/lib/stays';
 
 export function generateStaticParams() {
@@ -24,7 +24,7 @@ export default function StayPage({ params }: { params: { slug: string } }) {
         <ArrowLeft className="h-4 w-4" aria-hidden /> All stays
       </Link>
 
-      <StayArt stay={stay} className="mt-4 aspect-[5/2] rounded-card" />
+      <StayPhoto stay={stay} size="large" priority className="mt-4 aspect-[4/3] rounded-card sm:aspect-[5/2]" />
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_340px]">
         <div>

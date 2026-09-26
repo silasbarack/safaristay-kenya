@@ -1,8 +1,11 @@
 /**
  * Sample listings used until the site has a backend. The names are
- * placeholders, not real properties; swap this module for an API call
- * once stays are managed in a database.
+ * placeholders, not real properties, and the photos are stock images
+ * (see lib/photos.ts); swap this module for an API call once stays are
+ * managed in a database.
  */
+
+import type { PhotoKey } from './photos';
 
 export type StayType = 'Hotel' | 'Lodge' | 'Tented camp' | 'Beach villa';
 
@@ -20,8 +23,7 @@ export type Stay = {
   description: string;
   amenities: string[];
   experiences: string[];
-  // Two-stop gradient used as the card artwork until real photos exist.
-  palette: [string, string];
+  photo: PhotoKey;
 };
 
 export const stays: Stay[] = [
@@ -40,7 +42,7 @@ export const stays: Stay[] = [
       'Twelve raised canvas suites look out over the Mara plains. Mornings start with game drives at first light, evenings end around the fire under a sky full of stars. Full board, with guided drives twice a day.',
     amenities: ['Full board', 'Private deck', 'Solar hot water', 'Wi-Fi in the lounge', 'Airstrip transfers'],
     experiences: ['Sunrise game drive', 'Hot-air balloon safari', 'Maasai village visit', 'Bush breakfast'],
-    palette: ['#c99a3c', '#2f4d27'],
+    photo: 'thatchedLodgePool',
   },
   {
     slug: 'amboseli-acacia-lodge',
@@ -57,7 +59,7 @@ export const stays: Stay[] = [
       'A family-friendly lodge set among fever trees, facing Mount Kilimanjaro. Watch elephants cross the swamp from the pool terrace, then head out with a naturalist guide.',
     amenities: ['Half board', 'Swimming pool', 'Family rooms', 'Spa', 'Parking'],
     experiences: ['Elephant tracking', 'Kilimanjaro sundowner', 'Observation Hill walk'],
-    palette: ['#e9c77a', '#3f6331'],
+    photo: 'resortPoolDusk',
   },
   {
     slug: 'diani-coral-beach-villa',
@@ -74,7 +76,7 @@ export const stays: Stay[] = [
       'Three en-suite bedrooms, a plunge pool and a path straight onto Diani’s white sand. A house cook can prepare Swahili dishes on request.',
     amenities: ['Plunge pool', 'Beach access', 'Air conditioning', 'Kitchen', 'Wi-Fi'],
     experiences: ['Snorkelling at Kisite', 'Dhow sunset cruise', 'Colobus monkey walk'],
-    palette: ['#d9b25a', '#1f3a22'],
+    photo: 'oceanInfinityPool',
   },
   {
     slug: 'naivasha-lakeside-hotel',
@@ -91,7 +93,7 @@ export const stays: Stay[] = [
       'An easy weekend escape from Nairobi. Giraffes graze the lawns, hippos come ashore at dusk, and Hell’s Gate is a short drive away.',
     amenities: ['Breakfast included', 'Lake-view restaurant', 'Pool', 'Conference rooms', 'Parking'],
     experiences: ['Boat ride to Crescent Island', 'Cycling in Hell’s Gate', 'Bird walk'],
-    palette: ['#b8892f', '#4b7643'],
+    photo: 'whiteHotelPool',
   },
   {
     slug: 'samburu-riverbank-lodge',
@@ -108,7 +110,7 @@ export const stays: Stay[] = [
       'Northern Kenya at its wildest. Spot the “Samburu Special Five” — Grevy’s zebra, reticulated giraffe, gerenuk, beisa oryx and Somali ostrich — from open vehicles.',
     amenities: ['Full board', 'River-view cottages', 'Pool', 'Laundry'],
     experiences: ['Special Five game drive', 'Samburu cultural visit', 'Riverside dinner'],
-    palette: ['#c99a3c', '#284421'],
+    photo: 'sunsetTerraceResort',
   },
   {
     slug: 'nanyuki-mount-kenya-retreat',
@@ -125,7 +127,7 @@ export const stays: Stay[] = [
       'Stone cottages on the equator, with Mount Kenya on the horizon. A base for rhino sanctuaries, horse rides and hikes on the lower slopes.',
     amenities: ['Breakfast included', 'Fireplaces', 'Horse riding', 'Kids’ club', 'Parking'],
     experiences: ['Rhino sanctuary visit', 'Equator crossing', 'Guided forest hike'],
-    palette: ['#e9c77a', '#2f4d27'],
+    photo: 'mountainTerrace',
   },
 ];
 

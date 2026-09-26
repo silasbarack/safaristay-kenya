@@ -15,6 +15,7 @@ export default function Footer() {
           <h3 className="ss-eyebrow">Explore</h3>
           <ul className="mt-4 space-y-2 text-sm">
             <li><Link href="/stays" className="hover:text-gold-700">All stays</Link></li>
+            <li><Link href="/#gallery" className="hover:text-gold-700">Gallery</Link></li>
             <li><Link href="/#destinations" className="hover:text-gold-700">Destinations</Link></li>
             <li><Link href="/#why" className="hover:text-gold-700">Why SafariStay</Link></li>
           </ul>
@@ -28,7 +29,10 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-line py-5 text-center text-xs text-muted">
-        © {new Date().getFullYear()} SafariStay Kenya. All rights reserved.
+        © {new Date().getFullYear()} SafariStay Kenya. All rights reserved. · Photos:{' '}
+        <a href="https://unsplash.com" className="underline hover:text-gold-700" target="_blank" rel="noopener noreferrer">
+          Unsplash
+        </a>
       </div>
     </footer>
   );

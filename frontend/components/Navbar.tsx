@@ -3,6 +3,7 @@ import Logo from './Logo';
 
 const links = [
   { href: '/stays', label: 'Stays' },
+  { href: '/#gallery', label: 'Gallery' },
   { href: '/#destinations', label: 'Destinations' },
   { href: '/#why', label: 'Why SafariStay' },
 ];

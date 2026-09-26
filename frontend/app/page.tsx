@@ -3,7 +3,11 @@ import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Smartphone, Headset } from 'lucide-react';
 import StayCard from '@/components/StayCard';
 import SearchBar from '@/components/SearchBar';
-import { destinations, stays } from '@/lib/stays';
+import PhotoGallery from '@/components/PhotoGallery';
+import { photos, photoSrc } from '@/lib/photos';
+import { destinations, formatKes, stays } from '@/lib/stays';
+
+const lowestPrice = Math.min(...stays.map((s) => s.pricePerNightKes));
 
 const reasons = [
   {
@@ -41,15 +45,21 @@ export default function HomePage() {
               <SearchBar />
             </div>
           </div>
-          <div className="relative mx-auto w-full max-w-xl">
-            <Image
-              src="/brand/safaristay-kenya-logo-1080.jpg"
-              alt=""
-              width={1080}
-              height={721}
-              priority
-              className="h-auto w-full"
-            />
+          <div className="relative">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-card md:aspect-[5/4]">
+              <Image
+                src={photoSrc(photos.roomHero)}
+                alt={photos.roomHero.alt}
+                fill
+                priority
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-5 left-5 rounded-2xl border border-line bg-white px-4 py-3 shadow-card sm:left-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">Rooms from</p>
+              <p className="font-serif text-xl font-semibold text-forest-900">{formatKes(lowestPrice)} / night</p>
+            </div>
           </div>
         </div>
       </section>
@@ -69,6 +79,18 @@ export default function HomePage() {
           {stays.slice(0, 3).map((stay) => (
             <StayCard key={stay.slug} stay={stay} />
           ))}
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section id="gallery" className="ss-container scroll-mt-24 pb-16">
+        <p className="ss-eyebrow">Gallery</p>
+        <h2 className="mt-2 font-serif text-3xl font-semibold text-forest-900">Pools, lodges and ocean views</h2>
+        <p className="mt-2 max-w-2xl text-muted">
+          A taste of the stays you can book with SafariStay — from thatched safari lodges to whitewashed coast hotels.
+        </p>
+        <div className="mt-8">
+          <PhotoGallery />
         </div>
       </section>
 
