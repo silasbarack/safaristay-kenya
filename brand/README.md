@@ -2,15 +2,10 @@
 
 | File | Use |
 | --- | --- |
-| `safaristay-kenya-logo.png` | The original logo artwork (1080×721, on white). Use this wherever the full illustrated look matters: hero banners, social images, print. |
-| `safaristay-kenya-logo.jpg` | Same as the PNG, smaller file. |
-| `safaristay-kenya-logo.svg` | Vector version (viewBox 1080×720). Scales to any size, so use it for the site header, favicons and email headers. It is a simplified take on the illustration, so it looks flatter than the PNG. |
+| `safaristay-kenya-logo.png` | The official logo (1080×721, on white). Lossless — use it for the website, app and anything that needs crisp edges. |
+| `safaristay-kenya-logo.jpg` | The same logo as a JPEG — smaller file, for email, social posts and anywhere PNG isn't accepted. |
 
-Palette used in the vector:
+Palette taken from the logo:
 
-- Forest green `#1f3a22` (wordmark "SafariStay", hills)
-- Acacia green `#284421` / `#3f6331`
-- Gold `#b8892f` → `#d9b25a` (wordmark "Kenya", sun, roof, tagline rules)
-- Sun `#f6dc86` → `#c9962f`
-
-Wordmark font: Playfair Display 600, loaded from Google Fonts. The tagline uses Cormorant Garamond 600. If the fonts can't load (for example, the SVG is embedded as an `<img>`), it falls back to Georgia and `textLength` keeps the layout the same width.
+- Forest green `#1f3a22` ("SafariStay", hills, acacia canopy)
+- Gold `#b8892f` → `#d9b25a` ("Kenya", sun, lodge roof, tagline rules)
