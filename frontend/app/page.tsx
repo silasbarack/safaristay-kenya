@@ -30,37 +30,49 @@ const reasons = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero */}
-      <section className="bg-white">
-        <div className="ss-container grid items-center gap-10 py-14 md:grid-cols-2 md:py-20">
-          <div>
-            <p className="ss-eyebrow">Hotels · Lodges · Experiences</p>
-            <h1 className="mt-4 font-serif text-4xl font-semibold leading-tight text-forest-900 sm:text-5xl">
-              Wake up to the <span className="text-gold-600">wild side</span> of Kenya.
-            </h1>
-            <p className="mt-5 max-w-lg text-lg text-muted">
-              From tented camps on the Maasai Mara to beach villas in Diani, find your stay and book it in minutes.
-            </p>
-            <div className="mt-8">
-              <SearchBar />
-            </div>
+      {/* Hero: full-width hotel-room photo with the headline and search on top */}
+      <section className="relative isolate overflow-hidden bg-forest-950">
+        <Image
+          src={photoSrc(photos.roomHero, 'hero')}
+          alt={photos.roomHero.alt}
+          fill
+          priority
+          sizes="100vw"
+          className="-z-10 object-cover object-[72%_center] md:object-center"
+        />
+        {/* Keeps white text readable: shades top and bottom on phones, the left side on wider screens */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/75 via-forest-950/45 to-forest-950/80 md:bg-gradient-to-r md:from-forest-950/90 md:via-forest-950/60 md:to-forest-950/10"
+        />
+        <div className="ss-container flex min-h-[560px] flex-col justify-center py-16 md:min-h-[640px] md:py-24">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-300">
+            Hotels · Lodges · Experiences
+          </p>
+          <h1 className="mt-4 max-w-2xl font-serif text-4xl font-semibold leading-tight text-white sm:text-6xl">
+            Wake up to the <em className="text-gold-300">wild side</em> of Kenya.
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-white/85">
+            From tented camps on the Maasai Mara to beach villas in Diani, find your stay and book it in minutes.
+          </p>
+          <div className="mt-8 max-w-2xl">
+            <SearchBar />
           </div>
-          <div className="relative">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-card md:aspect-[5/4]">
-              <Image
-                src={photoSrc(photos.roomHero)}
-                alt={photos.roomHero.alt}
-                fill
-                priority
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-5 left-5 rounded-2xl border border-line bg-white px-4 py-3 shadow-card sm:left-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">Rooms from</p>
-              <p className="font-serif text-xl font-semibold text-forest-900">{formatKes(lowestPrice)} / night</p>
-            </div>
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-white/75">Popular:</span>
+            {destinations.map((d) => (
+              <Link
+                key={d.name}
+                href={`/stays?destination=${encodeURIComponent(d.name)}`}
+                className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-white backdrop-blur transition hover:border-gold-300 hover:bg-white/20"
+              >
+                {d.name}
+              </Link>
+            ))}
           </div>
+          <p className="mt-8 text-sm text-white/80">
+            Rooms from <strong className="font-semibold text-white">{formatKes(lowestPrice)}</strong> / night
+          </p>
         </div>
       </section>
 

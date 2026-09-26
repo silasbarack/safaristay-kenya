@@ -1,6 +1,7 @@
 /**
  * Stock photography, self-hosted in public/photos/ at two sizes:
- * `<name>.jpg` (longest side 1600px) and `<name>-800.jpg`.
+ * `<name>.jpg` (longest side 1600px) and `<name>-800.jpg`. The home-hero
+ * room photo is the exception: only `room-hero-2400.jpg`, as it spans the full width.
  * Source: Unsplash (https://unsplash.com/license — free for commercial use).
  * `unsplashId` is the photo-… ID, kept so each image can be traced back.
  * These are illustrative, not photos of the listed properties.
@@ -23,7 +24,7 @@ const photo = (name: string, alt: string, width: number, height: number, unsplas
 });
 
 export const photos = {
-  roomHero: photo('room-hero', 'Warm wood-panelled hotel room with a king bed opening onto a tropical garden', 1600, 1066, '1611892440504-42a792e24d32'),
+  roomHero: photo('room-hero', 'Warm wood-panelled hotel room with a king bed opening onto a tropical garden', 2400, 1600, '1611892440504-42a792e24d32'),
   thatchedLodgePool: photo('thatched-lodge-pool', 'Timber lodge with a steep shingle roof above a pool deck lined with loungers', 1600, 1066, '1566073771259-6a8506099945'),
   coastHotelPalms: photo('coast-hotel-palms', 'White coastal hotel with palm trees reflected in the pool at dusk', 1600, 1066, '1551882547-ff40c63fe5fa'),
   oceanInfinityPool: photo('ocean-infinity-pool', 'Infinity pool and timber deck looking out over the ocean under shady trees', 1600, 1066, '1584132967334-10e028bd69f7'),
@@ -54,6 +55,9 @@ export const galleryPhotos: Photo[] = [
   photos.mountainTerrace,
 ];
 
-export function photoSrc(p: Photo, size: 'large' | 'small' = 'large'): string {
-  return `/photos/${p.name}${size === 'small' ? '-800' : ''}.jpg`;
+const sizeSuffix = { hero: '-2400', large: '', small: '-800' } as const;
+
+// 'hero' exists only for photos.roomHero.
+export function photoSrc(p: Photo, size: keyof typeof sizeSuffix = 'large'): string {
+  return `/photos/${p.name}${sizeSuffix[size]}.jpg`;
 }

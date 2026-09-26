@@ -11,7 +11,7 @@ npm run lint
 
 ## Pages
 
-- `/` — hero with search and a hotel-room photo, featured stays, a 9-photo gallery, destinations, why SafariStay
+- `/` — full-width hotel-room photo hero with headline, search and popular destinations, featured stays, a 9-photo gallery, destinations, why SafariStay
 - `/stays` — all stays, filterable by destination (`/stays?destination=Diani%20Beach`)
 - `/stays/[slug]` — stay details with amenities, experiences and price per night
 
