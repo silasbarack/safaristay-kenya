@@ -1,0 +1,21 @@
+# Render Blueprint: New → Blueprint in the Render dashboard, then pick this repo.
+services:
+  - type: web
+    name: safaristay-kenya
+    runtime: node
+    # Free tier: the site spins down when idle and takes ~30-60s to wake on the next visit.
+    plan: free
+    # Closest Render region to Kenya.
+    region: frankfurt
+    rootDir: frontend
+    branch: main
+    buildCommand: npm ci && npm run build
+    # `next start` listens on the $PORT Render provides.
+    startCommand: npm run start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
