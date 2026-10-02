@@ -23,6 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body className="flex min-h-screen flex-col">
+        {/* Scroll-reveal content starts hidden; keep it visible when JavaScript is off */}
+        <noscript>
+          <style>{'.ss-reveal{opacity:1!important;transform:none!important}'}</style>
+        </noscript>
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

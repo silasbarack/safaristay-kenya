@@ -24,6 +24,8 @@ export type Stay = {
   amenities: string[];
   experiences: string[];
   photo: PhotoKey;
+  /** Short label shown on the photo of featured stays, e.g. 'Popular'. */
+  badge?: string;
 };
 
 export const stays: Stay[] = [
@@ -43,6 +45,7 @@ export const stays: Stay[] = [
     amenities: ['Full board', 'Private deck', 'Solar hot water', 'Wi-Fi in the lounge', 'Airstrip transfers'],
     experiences: ['Sunrise game drive', 'Hot-air balloon safari', 'Maasai village visit', 'Bush breakfast'],
     photo: 'thatchedLodgePool',
+    badge: 'Popular',
   },
   {
     slug: 'amboseli-acacia-lodge',
@@ -60,6 +63,7 @@ export const stays: Stay[] = [
     amenities: ['Half board', 'Swimming pool', 'Family rooms', 'Spa', 'Parking'],
     experiences: ['Elephant tracking', 'Kilimanjaro sundowner', 'Observation Hill walk'],
     photo: 'resortPoolDusk',
+    badge: 'Eco friendly',
   },
   {
     slug: 'diani-coral-beach-villa',
@@ -77,6 +81,7 @@ export const stays: Stay[] = [
     amenities: ['Plunge pool', 'Beach access', 'Air conditioning', 'Kitchen', 'Wi-Fi'],
     experiences: ['Snorkelling at Kisite', 'Dhow sunset cruise', 'Colobus monkey walk'],
     photo: 'oceanInfinityPool',
+    badge: 'Beachfront',
   },
   {
     slug: 'naivasha-lakeside-hotel',
@@ -129,7 +134,35 @@ export const stays: Stay[] = [
     experiences: ['Rhino sanctuary visit', 'Equator crossing', 'Guided forest hike'],
     photo: 'mountainTerrace',
   },
+  {
+    slug: 'nairobi-skyline-hotel',
+    name: 'Nairobi Skyline Hotel',
+    type: 'Hotel',
+    destination: 'Nairobi',
+    region: 'Nairobi County',
+    pricePerNightKes: 21000,
+    rating: 4.6,
+    reviews: 256,
+    guests: 2,
+    summary: 'Modern city rooms with views towards Nairobi National Park.',
+    description:
+      'A calm base in the capital, twenty minutes from the airport. Start the day with a game drive in Nairobi National Park, then come back for dinner on the rooftop terrace.',
+    amenities: ['Breakfast included', 'Rooftop restaurant', 'Gym', 'Airport transfers', 'Wi-Fi'],
+    experiences: ['Nairobi National Park drive', 'Giraffe Centre visit', 'Karen Blixen Museum'],
+    photo: 'roomHero',
+    badge: 'City hotel',
+  },
 ];
+
+// The four stays on the home page, in display order.
+export const featuredSlugs = [
+  'mara-horizon-tented-camp',
+  'diani-coral-beach-villa',
+  'amboseli-acacia-lodge',
+  'nairobi-skyline-hotel',
+];
+
+export const featuredStays: Stay[] = featuredSlugs.map((slug) => stays.find((s) => s.slug === slug)!);
 
 export function getStay(slug: string): Stay | undefined {
   return stays.find((s) => s.slug === slug);
