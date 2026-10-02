@@ -24,12 +24,12 @@ export default function StayPage({ params }: { params: { slug: string } }) {
         <ArrowLeft className="h-4 w-4" aria-hidden /> All stays
       </Link>
 
-      <StayPhoto stay={stay} size="large" priority className="mt-4 aspect-[4/3] rounded-card sm:aspect-[5/2]" />
+      <StayPhoto stay={stay} size="large" priority className="mt-4 aspect-[4/3] animate-fade-in rounded-card sm:aspect-[5/2]" />
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_340px]">
         <div>
           <p className="ss-eyebrow">{stay.type}</p>
-          <h1 className="mt-2 font-serif text-4xl font-semibold text-forest-900">{stay.name}</h1>
+          <h1 className="mt-2 font-serif text-4xl font-semibold text-ink">{stay.name}</h1>
           <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
             <span className="flex items-center gap-1">
               <MapPin className="h-4 w-4" aria-hidden /> {stay.destination}, {stay.region}

@@ -1,40 +1,54 @@
 import Link from 'next/link';
-import { MapPin, Star, Users } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
+import clsx from 'clsx';
 import { formatKes, type Stay } from '@/lib/stays';
 import StayPhoto from './StayPhoto';
+
+export function Stars({ rating }: { rating: number }) {
+  return (
+    <span className="flex items-center gap-0.5" aria-hidden>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star
+          key={i}
+          className={clsx('h-3.5 w-3.5', i <= Math.round(rating) ? 'fill-gold-500 text-gold-500' : 'fill-line text-line')}
+        />
+      ))}
+    </span>
+  );
+}
 
 export default function StayCard({ stay }: { stay: Stay }) {
   return (
     <Link
       href={`/stays/${stay.slug}`}
-      className="group flex flex-col overflow-hidden rounded-card border border-line bg-white shadow-card transition hover:-translate-y-1"
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500"
     >
-      <StayPhoto stay={stay} className="h-48" />
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center justify-between text-xs">
-          <span className="ss-eyebrow">{stay.type}</span>
-          <span className="flex items-center gap-1 font-semibold text-ink">
-            <Star className="h-3.5 w-3.5 fill-gold-500 text-gold-500" aria-hidden />
-            {stay.rating.toFixed(1)}
-            <span className="font-normal text-muted">({stay.reviews})</span>
+      <StayPhoto
+        stay={stay}
+        className="aspect-[4/3]"
+        imageClassName="group-hover:scale-105"
+      />
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <h3 className="font-serif text-lg font-semibold leading-snug text-ink group-hover:text-forest-700">{stay.name}</h3>
+        <div className="mt-1.5 flex items-center gap-2 text-xs">
+          <Stars rating={stay.rating} />
+          <span className="text-muted">
+            <span className="sr-only">Rated </span>
+            {stay.rating.toFixed(1)} ({stay.reviews} reviews)
           </span>
         </div>
-        <h3 className="mt-2 font-serif text-xl font-semibold text-forest-900 group-hover:text-gold-700">
-          {stay.name}
-        </h3>
-        <p className="mt-1 flex items-center gap-1 text-sm text-muted">
-          <MapPin className="h-4 w-4" aria-hidden />
+        <p className="mt-2 flex items-center gap-1 text-xs text-muted">
+          <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
           {stay.destination}, {stay.region}
         </p>
-        <p className="mt-3 text-sm text-ink/80">{stay.summary}</p>
-        <div className="mt-auto flex items-end justify-between pt-5">
-          <p>
-            <span className="text-lg font-semibold text-forest-900">{formatKes(stay.pricePerNightKes)}</span>
-            <span className="text-sm text-muted"> / night</span>
+        <p className="mt-2 line-clamp-2 text-sm text-ink/75">{stay.summary}</p>
+        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
+          <p className="leading-tight">
+            <span className="block text-base font-bold text-ink">{formatKes(stay.pricePerNightKes)}</span>
+            <span className="text-xs text-muted">/ night</span>
           </p>
-          <span className="flex items-center gap-1 text-xs text-muted">
-            <Users className="h-4 w-4" aria-hidden />
-            Up to {stay.guests}
+          <span className="rounded-lg bg-forest-900 px-3.5 py-2 text-xs font-semibold text-white transition group-hover:bg-forest-700">
+            View details
           </span>
         </div>
       </div>

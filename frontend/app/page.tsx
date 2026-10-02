@@ -1,147 +1,106 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Smartphone, Headset } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import StayCard from '@/components/StayCard';
 import SearchBar from '@/components/SearchBar';
 import PhotoGallery from '@/components/PhotoGallery';
+import DestinationChips from '@/components/DestinationChips';
+import TrustBar from '@/components/TrustBar';
+import FadeImage from '@/components/FadeImage';
+import Reveal from '@/components/Reveal';
 import { photos, photoSrc } from '@/lib/photos';
-import { destinations, formatKes, stays } from '@/lib/stays';
+import { featuredStays } from '@/lib/stays';
 
-const lowestPrice = Math.min(...stays.map((s) => s.pricePerNightKes));
-
-const reasons = [
-  {
-    icon: BadgeCheck,
-    title: 'Hand-picked stays',
-    body: 'Every hotel, lodge and camp is visited and vetted before it is listed.',
-  },
-  {
-    icon: Smartphone,
-    title: 'Pay with M-Pesa',
-    body: 'Confirm your booking from your phone in seconds. Cards are accepted too.',
-  },
-  {
-    icon: Headset,
-    title: 'Local support',
-    body: 'A Nairobi-based team is on hand before, during and after your trip.',
-  },
-];
+// Staggers the hero's entrance: each line rises in a beat after the one above.
+const enter = (ms: number) => ({ animationDelay: `${ms}ms` });
 
 export default function HomePage() {
   return (
     <>
-      {/* Hero: full-width hotel-room photo with the headline and search on top */}
+      {/* Hero: savanna sunset with the headline; the search card overlaps its lower edge */}
       <section className="relative isolate overflow-hidden bg-forest-950">
-        <Image
-          src={photoSrc(photos.roomHero, 'hero')}
-          alt={photos.roomHero.alt}
-          fill
-          priority
-          sizes="100vw"
-          className="-z-10 object-cover object-[72%_center] md:object-center"
-        />
-        {/* Keeps white text readable: shades top and bottom on phones, the left side on wider screens */}
+        <div className="absolute inset-0 -z-10">
+          <FadeImage
+            src={photoSrc(photos.savannaHero, 'hero')}
+            alt={photos.savannaHero.alt}
+            priority
+            sizes="100vw"
+            className="object-cover object-[60%_center]"
+            loadedClassName="animate-hero-zoom"
+            skeletonClassName="!bg-forest-900"
+          />
+        </div>
+        {/* Keeps white text readable: shades the bottom on phones, the left side on wider screens */}
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/75 via-forest-950/45 to-forest-950/80 md:bg-gradient-to-r md:from-forest-950/90 md:via-forest-950/60 md:to-forest-950/10"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-forest-950/55 via-forest-950/35 to-forest-950/85 md:bg-gradient-to-r md:from-forest-950/85 md:via-forest-950/45 md:to-transparent"
         />
-        <div className="ss-container flex min-h-[560px] flex-col justify-center py-16 md:min-h-[640px] md:py-24">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-300">
-            Hotels · Lodges · Experiences
+        <div className="ss-container flex min-h-[480px] flex-col justify-center pb-24 pt-14 sm:min-h-[540px] md:min-h-[600px] md:pb-32">
+          <p className="animate-fade-up text-xs font-semibold uppercase tracking-[0.25em] text-gold-300" style={enter(150)}>
+            Discover · Stay · Explore
           </p>
-          <h1 className="mt-4 max-w-2xl font-serif text-4xl font-semibold leading-tight text-white sm:text-6xl">
-            Wake up to the <em className="text-gold-300">wild side</em> of Kenya.
+          <h1
+            className="mt-4 max-w-2xl animate-fade-up font-serif text-[2.6rem] font-semibold leading-[1.08] text-white sm:text-6xl lg:text-7xl"
+            style={enter(300)}
+          >
+            Unforgettable Stays Across Kenya
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-white/85">
-            From tented camps on the Maasai Mara to beach villas in Diani, find your stay and book it in minutes.
+          <p className="mt-5 max-w-lg animate-fade-up text-base text-white/85 sm:text-lg" style={enter(480)}>
+            From luxury hotels to iconic safari lodges, find your perfect stay and experience the true magic of Kenya.
           </p>
-          <div className="mt-8 max-w-2xl">
+        </div>
+      </section>
+
+      {/* Search card + destination quick links */}
+      <section id="destinations" className="relative z-10 scroll-mt-24">
+        <div className="ss-container -mt-16 md:-mt-20">
+          <div className="animate-fade-up" style={enter(650)}>
             <SearchBar />
           </div>
-          <div className="mt-5 flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-white/75">Popular:</span>
-            {destinations.map((d) => (
-              <Link
-                key={d.name}
-                href={`/stays?destination=${encodeURIComponent(d.name)}`}
-                className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-white backdrop-blur transition hover:border-gold-300 hover:bg-white/20"
-              >
-                {d.name}
-              </Link>
-            ))}
+          <div className="mt-6 sm:mt-8">
+            <DestinationChips />
           </div>
-          <p className="mt-8 text-sm text-white/80">
-            Rooms from <strong className="font-semibold text-white">{formatKes(lowestPrice)}</strong> / night
-          </p>
         </div>
       </section>
 
       {/* Featured stays */}
-      <section className="ss-container py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <section id="featured" className="ss-container scroll-mt-24 pt-14 sm:pt-16">
+        <Reveal className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="ss-eyebrow">Featured</p>
-            <h2 className="mt-2 font-serif text-3xl font-semibold text-forest-900">Stays our guests love</h2>
+            <h2 className="font-serif text-3xl font-semibold text-ink sm:text-4xl">Featured Stays</h2>
+            <p className="mt-1 text-sm text-muted sm:text-base">Handpicked hotels, lodges and camps across Kenya</p>
           </div>
-          <Link href="/stays" className="inline-flex items-center gap-1 text-sm font-semibold text-forest-900 hover:text-gold-700">
-            See all stays <ArrowRight className="h-4 w-4" aria-hidden />
+          <Link
+            href="/stays"
+            className="group inline-flex items-center gap-1 text-sm font-semibold text-forest-900 hover:text-gold-700"
+          >
+            View all stays <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
           </Link>
-        </div>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {stays.slice(0, 3).map((stay) => (
-            <StayCard key={stay.slug} stay={stay} />
+        </Reveal>
+        <div className="mt-6 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
+          {featuredStays.map((stay, i) => (
+            <Reveal key={stay.slug} delay={i * 110} className="h-full">
+              <StayCard stay={stay} />
+            </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Trust signals */}
+      <section className="ss-container pt-10 sm:pt-12">
+        <TrustBar />
       </section>
 
       {/* Gallery */}
-      <section id="gallery" className="ss-container scroll-mt-24 pb-16">
-        <p className="ss-eyebrow">Gallery</p>
-        <h2 className="mt-2 font-serif text-3xl font-semibold text-forest-900">Pools, lodges and ocean views</h2>
-        <p className="mt-2 max-w-2xl text-muted">
-          A taste of the stays you can book with SafariStay — from thatched safari lodges to whitewashed coast hotels.
-        </p>
+      <section id="gallery" className="ss-container scroll-mt-24 pt-16">
+        <Reveal>
+          <p className="ss-eyebrow">Gallery</p>
+          <h2 className="mt-2 font-serif text-3xl font-semibold text-ink sm:text-4xl">Pools, lodges and ocean views</h2>
+          <p className="mt-2 max-w-2xl text-muted">
+            A taste of the stays you can book with SafariStay — from thatched safari lodges to whitewashed coast hotels.
+          </p>
+        </Reveal>
         <div className="mt-8">
           <PhotoGallery />
-        </div>
-      </section>
-
-      {/* Destinations */}
-      <section id="destinations" className="scroll-mt-24 bg-forest-900 py-16 text-white">
-        <div className="ss-container">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-300">Destinations</p>
-          <h2 className="mt-2 font-serif text-3xl font-semibold">Where will you wake up?</h2>
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {destinations.map((d) => (
-              <Link
-                key={d.name}
-                href={`/stays?destination=${encodeURIComponent(d.name)}`}
-                className="rounded-card border border-white/15 bg-white/5 p-5 transition hover:border-gold-400 hover:bg-white/10"
-              >
-                <p className="font-serif text-lg font-semibold">{d.name}</p>
-                <p className="mt-1 text-sm text-white/70">
-                  {d.count} {d.count === 1 ? 'stay' : 'stays'}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why us */}
-      <section id="why" className="ss-container scroll-mt-24 py-16">
-        <p className="ss-eyebrow">Why SafariStay</p>
-        <h2 className="mt-2 font-serif text-3xl font-semibold text-forest-900">Kenya, booked properly</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {reasons.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-card border border-line bg-white p-6 shadow-card">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-gold-100 text-gold-700">
-                <Icon className="h-5 w-5" aria-hidden />
-              </span>
-              <h3 className="mt-4 font-serif text-xl font-semibold text-forest-900">{title}</h3>
-              <p className="mt-2 text-sm text-muted">{body}</p>
-            </div>
-          ))}
         </div>
       </section>
     </>
