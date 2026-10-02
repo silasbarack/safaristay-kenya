@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="sm:col-span-2 md:col-span-1">
           <Logo className="h-24" />
           <p className="mt-4 max-w-sm text-sm text-muted">
-            Hand-picked hotels, lodges and experiences across Kenya — from the Mara plains to the Diani coast.
+            Hand-picked hotels, lodges and experiences across Kenya — from the Mara plains to the Mombasa coast.
           </p>
         </div>
         <div>
@@ -24,7 +24,7 @@ export default function Footer() {
           <h3 className="ss-eyebrow">Contact</h3>
           <ul className="mt-4 space-y-2 text-sm text-muted">
             <li>Nairobi, Kenya</li>
-            <li>Pay securely with M-Pesa or card</li>
+            <li>Book directly with each hotel</li>
           </ul>
         </div>
       </div>

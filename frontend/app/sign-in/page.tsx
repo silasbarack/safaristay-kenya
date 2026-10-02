@@ -13,7 +13,7 @@ export default function SignInPage() {
         </span>
         <h1 className="mt-4 font-serif text-3xl font-semibold text-ink">Sign in</h1>
         <p className="mt-2 text-sm text-muted">
-          Guest accounts — to manage your bookings and pay with M-Pesa — are coming soon. You can browse every stay in the
+          Guest accounts — to save stays and keep track of your enquiries — are coming soon. You can browse every stay in the
           meantime.
         </p>
         <Link href="/stays" className="ss-btn-primary mt-6 w-full py-3">

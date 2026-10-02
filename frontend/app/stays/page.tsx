@@ -3,7 +3,7 @@ import Link from 'next/link';
 import StayCard from '@/components/StayCard';
 import SearchBar from '@/components/SearchBar';
 import Reveal from '@/components/Reveal';
-import { stays } from '@/lib/stays';
+import { RATES_CHECKED_ON, maxGuests, stays } from '@/lib/stays';
 
 export const metadata: Metadata = { title: 'Stays' };
 
@@ -12,7 +12,7 @@ type SearchParams = { destination?: string; checkin?: string; checkout?: string;
 export default function StaysPage({ searchParams }: { searchParams: SearchParams }) {
   const destination = searchParams.destination ?? '';
   const guests = Math.max(1, Number.parseInt(searchParams.guests ?? '', 10) || 1);
-  const results = stays.filter((s) => (!destination || s.destination === destination) && s.guests >= guests);
+  const results = stays.filter((s) => (!destination || s.destination === destination) && maxGuests(s) >= guests);
 
   return (
     <div className="ss-container py-10 sm:py-12">
@@ -32,7 +32,7 @@ export default function StaysPage({ searchParams }: { searchParams: SearchParams
       </div>
       <p className="mt-8 text-sm text-muted">
         {results.length} {results.length === 1 ? 'stay' : 'stays'} found
-        {guests > 1 && ` for ${guests} guests`}
+        {guests > 1 && ` for ${guests} guests`} · Rates from hotel websites, checked {RATES_CHECKED_ON}
       </p>
       {results.length > 0 ? (
         <div className="mt-4 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">

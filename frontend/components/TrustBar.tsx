@@ -1,11 +1,11 @@
-import { Headset, LockKeyhole, ShieldCheck, Smartphone } from 'lucide-react';
+import { BadgeDollarSign, Headset, Phone, ShieldCheck } from 'lucide-react';
 import Reveal from './Reveal';
 
 const items = [
-  { icon: ShieldCheck, title: 'Verified Stays', body: 'Handpicked & trusted properties' },
-  { icon: Smartphone, title: 'Pay with M-Pesa', body: 'Or card — quick and simple' },
-  { icon: LockKeyhole, title: 'Secure Payment', body: 'Your data is always safe' },
-  { icon: Headset, title: 'Local Support', body: 'Kenyan-based team' },
+  { icon: ShieldCheck, title: 'Verified Stays', body: 'Real hotels, official details' },
+  { icon: Phone, title: 'Book Direct', body: 'Call or email the hotel' },
+  { icon: BadgeDollarSign, title: 'Real Rates', body: 'From prices on hotel sites' },
+  { icon: Headset, title: 'Local Knowledge', body: 'Kenyan-based team' },
 ];
 
 export default function TrustBar() {

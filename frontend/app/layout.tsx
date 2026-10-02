@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     template: '%s · SafariStay Kenya',
   },
   description:
-    'Book hand-picked hotels, safari lodges, tented camps and beach villas across Kenya, and pay with M-Pesa.',
+    'Find hotels, safari lodges, tented camps and beach resorts across Kenya, with real rates and official contacts to book direct.',
   openGraph: {
     images: ['/brand/safaristay-kenya-logo.png'],
   },
