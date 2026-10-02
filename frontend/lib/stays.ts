@@ -1,172 +1,259 @@
 /**
- * Sample listings used until the site has a backend. The names are
- * placeholders, not real properties, and the photos are stock images
- * (see lib/photos.ts); swap this module for an API call once stays are
- * managed in a database.
+ * Stays listed on SafariStay: real Kenyan hotels and lodges.
+ *
+ * Names, locations, phone numbers, emails and room rates come from each
+ * hotel's official website (see `website`) and were last checked on
+ * `RATES_CHECKED_ON`. Room rates are the hotel's own "from" prices in USD and
+ * change daily; the KES figure is an approximate conversion. The photos are
+ * stock images (see lib/photos.ts), not photos of these properties.
+ * SafariStay is not affiliated with these hotels — guests book directly.
+ *
+ * A hotel only gets a `whatsapp` number if its official site publishes one.
  */
 
 import type { PhotoKey } from './photos';
 
-export type StayType = 'Hotel' | 'Lodge' | 'Tented camp' | 'Beach villa';
+export type StayType = 'Hotel' | 'Safari lodge' | 'Tented camp' | 'Beach resort';
+
+export type Room = {
+  name: string;
+  fromUsd: number;
+  sleeps: number;
+};
+
+export type Contact = {
+  /** The hotel's own phone lines, in international format. */
+  phones: string[];
+  /** The group's central reservations line, when the hotel's page lists it. */
+  reservationsPhone?: string;
+  email: string;
+  /** Only set when the hotel's official site lists a WhatsApp number. */
+  whatsapp?: string;
+};
 
 export type Stay = {
   slug: string;
   name: string;
   type: StayType;
   destination: string;
-  region: string;
-  pricePerNightKes: number;
-  rating: number;
-  reviews: number;
-  guests: number;
+  /** Where in the destination, as the hotel describes it. */
+  area: string;
   summary: string;
   description: string;
-  amenities: string[];
-  experiences: string[];
+  highlights: string[];
+  rooms: Room[];
+  contact: Contact;
+  website: string;
   photo: PhotoKey;
+  /** Extra photos for the stay page. */
+  gallery: PhotoKey[];
   /** Short label shown on the photo of featured stays, e.g. 'Popular'. */
   badge?: string;
 };
 
+export const RATES_CHECKED_ON = '2 October 2026';
+
+// Approximate rate used to show KES next to the hotels' USD prices.
+export const KES_PER_USD = 129;
+
+const SERENA_RESERVATIONS = '+254 732 123333';
+
 export const stays: Stay[] = [
   {
-    slug: 'mara-horizon-tented-camp',
-    name: 'Mara Horizon Tented Camp',
-    type: 'Tented camp',
+    slug: 'mara-serena-safari-lodge',
+    name: 'Mara Serena Safari Lodge',
+    type: 'Safari lodge',
     destination: 'Maasai Mara',
-    region: 'Narok County',
-    pricePerNightKes: 38500,
-    rating: 4.9,
-    reviews: 212,
-    guests: 2,
-    summary: 'Canvas suites on the edge of the reserve, with the migration on your doorstep.',
+    area: 'Mara Triangle, Maasai Mara National Reserve',
+    summary: 'A lodge in the Mara Triangle with a front-row view of the wildebeest migration.',
     description:
-      'Twelve raised canvas suites look out over the Mara plains. Mornings start with game drives at first light, evenings end around the fire under a sky full of stars. Full board, with guided drives twice a day.',
-    amenities: ['Full board', 'Private deck', 'Solar hot water', 'Wi-Fi in the lounge', 'Airstrip transfers'],
-    experiences: ['Sunrise game drive', 'Hot-air balloon safari', 'Maasai village visit', 'Bush breakfast'],
+      'Mara Serena sits in the Mara Triangle of the Maasai Mara National Reserve, overlooking the plains the great wildebeest migration crosses each year. It is a base for Big Five game drives, balloon safaris and Maasai cultural visits.',
+    highlights: ['Wildebeest migration views', 'Big Five game drives', 'Balloon safaris', 'Maasai cultural visits'],
+    rooms: [
+      { name: 'Standard Double Room', fromUsd: 377, sleeps: 2 },
+      { name: 'Standard Twin Room', fromUsd: 377, sleeps: 2 },
+      { name: 'The Suite', fromUsd: 577, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 736 595900', '+254 736 595901'],
+      reservationsPhone: SERENA_RESERVATIONS,
+      email: 'mara@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/mara',
     photo: 'thatchedLodgePool',
+    gallery: ['maraSafariSunset', 'timberSafariRoom', 'elephantSavanna'],
     badge: 'Popular',
   },
   {
-    slug: 'amboseli-acacia-lodge',
-    name: 'Amboseli Acacia Lodge',
-    type: 'Lodge',
-    destination: 'Amboseli',
-    region: 'Kajiado County',
-    pricePerNightKes: 29000,
-    rating: 4.8,
-    reviews: 164,
-    guests: 3,
-    summary: 'Elephant herds and Kilimanjaro views from a stone-and-thatch lodge.',
+    slug: 'serena-beach-resort-spa',
+    name: 'Serena Beach Resort & Spa',
+    type: 'Beach resort',
+    destination: 'Mombasa',
+    area: 'Shanzu Beach, Mombasa',
+    summary: 'A heritage beach resort on the white sands of Shanzu Beach, north of Mombasa.',
     description:
-      'A family-friendly lodge set among fever trees, facing Mount Kilimanjaro. Watch elephants cross the swamp from the pool terrace, then head out with a naturalist guide.',
-    amenities: ['Half board', 'Swimming pool', 'Family rooms', 'Spa', 'Parking'],
-    experiences: ['Elephant tracking', 'Kilimanjaro sundowner', 'Observation Hill walk'],
-    photo: 'resortPoolDusk',
-    badge: 'Eco friendly',
-  },
-  {
-    slug: 'diani-coral-beach-villa',
-    name: 'Diani Coral Beach Villa',
-    type: 'Beach villa',
-    destination: 'Diani Beach',
-    region: 'Kwale County',
-    pricePerNightKes: 24500,
-    rating: 4.7,
-    reviews: 98,
-    guests: 6,
-    summary: 'A private villa steps from white sand and the Indian Ocean.',
-    description:
-      'Three en-suite bedrooms, a plunge pool and a path straight onto Diani’s white sand. A house cook can prepare Swahili dishes on request.',
-    amenities: ['Plunge pool', 'Beach access', 'Air conditioning', 'Kitchen', 'Wi-Fi'],
-    experiences: ['Snorkelling at Kisite', 'Dhow sunset cruise', 'Colobus monkey walk'],
-    photo: 'oceanInfinityPool',
+      'Serena Beach Resort & Spa lies along Shanzu Beach on Kenya’s north coast. Rooms range from garden-view doubles to sea-view family rooms and suites, so it suits couples and families alike.',
+    highlights: ['On Shanzu Beach', 'Sea-view rooms and suites', 'Family rooms for four', 'Spa'],
+    rooms: [
+      { name: 'Deluxe Queen Garden View', fromUsd: 231.2, sleeps: 2 },
+      { name: 'Superior Room', fromUsd: 231.2, sleeps: 2 },
+      { name: 'Superior Twin Seaview Room', fromUsd: 306, sleeps: 2 },
+      { name: 'Family Room', fromUsd: 382.5, sleeps: 4 },
+      { name: 'Family Seaview Room', fromUsd: 412.25, sleeps: 4 },
+      { name: 'Garden Suite', fromUsd: 620.5, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 733 584500', '+254 733 584501'],
+      email: 'mombasa@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/serena-beach',
+    photo: 'palmPoolResort',
+    gallery: ['thatchedBeachResort', 'thatchedPoolGarden', 'warmHotelRoom'],
     badge: 'Beachfront',
   },
   {
-    slug: 'naivasha-lakeside-hotel',
-    name: 'Naivasha Lakeside Hotel',
-    type: 'Hotel',
-    destination: 'Lake Naivasha',
-    region: 'Nakuru County',
-    pricePerNightKes: 14500,
-    rating: 4.6,
-    reviews: 301,
-    guests: 2,
-    summary: 'Garden rooms on the lake shore, two hours from Nairobi.',
+    slug: 'amboseli-serena-safari-lodge',
+    name: 'Amboseli Serena Safari Lodge',
+    type: 'Safari lodge',
+    destination: 'Amboseli',
+    area: 'Amboseli National Park',
+    summary: 'An elegant lodge inside Amboseli National Park with uninterrupted views of Mount Kilimanjaro.',
     description:
-      'An easy weekend escape from Nairobi. Giraffes graze the lawns, hippos come ashore at dusk, and Hell’s Gate is a short drive away.',
-    amenities: ['Breakfast included', 'Lake-view restaurant', 'Pool', 'Conference rooms', 'Parking'],
-    experiences: ['Boat ride to Crescent Island', 'Cycling in Hell’s Gate', 'Bird walk'],
-    photo: 'whiteHotelPool',
+      'In the heart of Amboseli National Park, this lodge looks out at Mount Kilimanjaro. Family rooms sleep four, which makes it an easy safari lodge to visit with children.',
+    highlights: ['Views of Mount Kilimanjaro', 'Inside Amboseli National Park', 'Family rooms for four', 'Elephant country'],
+    rooms: [
+      { name: 'Standard King Room', fromUsd: 154, sleeps: 2 },
+      { name: 'Standard Twin Room', fromUsd: 154, sleeps: 2 },
+      { name: 'Standard Triple Room', fromUsd: 154, sleeps: 3 },
+      { name: 'Family Room', fromUsd: 154, sleeps: 4 },
+      { name: 'Ol Donyo Oibor Suite', fromUsd: 523, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 735 522361'],
+      reservationsPhone: SERENA_RESERVATIONS,
+      email: 'amboseli@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/amboseli',
+    photo: 'resortPoolDusk',
+    gallery: ['amboseliKilimanjaro', 'lodgeBedroomLamps', 'elephantSavanna'],
+    badge: 'Kilimanjaro views',
   },
   {
-    slug: 'samburu-riverbank-lodge',
-    name: 'Samburu Riverbank Lodge',
-    type: 'Lodge',
-    destination: 'Samburu',
-    region: 'Samburu County',
-    pricePerNightKes: 33000,
-    rating: 4.8,
-    reviews: 87,
-    guests: 2,
-    summary: 'Cottages under doum palms on the Ewaso Nyiro river.',
-    description:
-      'Northern Kenya at its wildest. Spot the “Samburu Special Five” — Grevy’s zebra, reticulated giraffe, gerenuk, beisa oryx and Somali ostrich — from open vehicles.',
-    amenities: ['Full board', 'River-view cottages', 'Pool', 'Laundry'],
-    experiences: ['Special Five game drive', 'Samburu cultural visit', 'Riverside dinner'],
-    photo: 'sunsetTerraceResort',
-  },
-  {
-    slug: 'nanyuki-mount-kenya-retreat',
-    name: 'Mount Kenya Retreat',
-    type: 'Hotel',
-    destination: 'Nanyuki',
-    region: 'Laikipia County',
-    pricePerNightKes: 18000,
-    rating: 4.7,
-    reviews: 143,
-    guests: 4,
-    summary: 'Cool highland air, log fires and views of Mount Kenya.',
-    description:
-      'Stone cottages on the equator, with Mount Kenya on the horizon. A base for rhino sanctuaries, horse rides and hikes on the lower slopes.',
-    amenities: ['Breakfast included', 'Fireplaces', 'Horse riding', 'Kids’ club', 'Parking'],
-    experiences: ['Rhino sanctuary visit', 'Equator crossing', 'Guided forest hike'],
-    photo: 'mountainTerrace',
-  },
-  {
-    slug: 'nairobi-skyline-hotel',
-    name: 'Nairobi Skyline Hotel',
+    slug: 'nairobi-serena-hotel',
+    name: 'Nairobi Serena Hotel',
     type: 'Hotel',
     destination: 'Nairobi',
-    region: 'Nairobi County',
-    pricePerNightKes: 21000,
-    rating: 4.6,
-    reviews: 256,
-    guests: 2,
-    summary: 'Modern city rooms with views towards Nairobi National Park.',
+    area: 'Kenyatta Avenue, Nairobi',
+    summary: 'A five-star city hotel on Kenyatta Avenue, set in lush gardens in central Nairobi.',
     description:
-      'A calm base in the capital, twenty minutes from the airport. Start the day with a game drive in Nairobi National Park, then come back for dinner on the rooftop terrace.',
-    amenities: ['Breakfast included', 'Rooftop restaurant', 'Gym', 'Airport transfers', 'Wi-Fi'],
-    experiences: ['Nairobi National Park drive', 'Giraffe Centre visit', 'Karen Blixen Museum'],
-    photo: 'roomHero',
+      'Nairobi Serena is a five-star hotel on Kenyatta Avenue in the centre of the city, surrounded by gardens. It is a calm base before or after a safari, with rooms from deluxe doubles to executive suites.',
+    highlights: ['Central Nairobi location', 'Lush gardens', 'Five-star rooms and suites', 'Executive rooms'],
+    rooms: [
+      { name: 'Deluxe Room', fromUsd: 196.8, sleeps: 2 },
+      { name: 'Deluxe Twin Room', fromUsd: 196.8, sleeps: 2 },
+      { name: 'Executive Room', fromUsd: 287, sleeps: 2 },
+      { name: 'Premium Room', fromUsd: 303.4, sleeps: 2 },
+      { name: 'Executive Suite', fromUsd: 524.8, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 732 124000', '+254 727 282200'],
+      email: 'nairobi@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/nairobi',
+    photo: 'classicHotelRoom',
+    gallery: ['cityHotelRoom', 'nairobiSkyline', 'gardenLounge'],
     badge: 'City hotel',
   },
+  {
+    slug: 'lake-elmenteita-serena-camp',
+    name: 'Lake Elmenteita Serena Camp',
+    type: 'Tented camp',
+    destination: 'Lake Elmenteita',
+    area: 'Soysambu Conservancy, Nakuru',
+    summary: 'A five-star tented camp by Lake Elmenteita, ten minutes’ drive from Lake Nakuru National Park.',
+    description:
+      'This tented camp stands in the Soysambu Conservancy beside Lake Elmenteita, about ten minutes’ drive from Lake Nakuru National Park. The lake draws flamingos and other birdlife.',
+    highlights: ['Beside Lake Elmenteita', '10 min to Lake Nakuru National Park', 'Birdwatching and flamingos', 'Deluxe tents'],
+    rooms: [
+      { name: 'Deluxe King Tent', fromUsd: 405, sleeps: 2 },
+      { name: 'Deluxe Twin Tent', fromUsd: 405, sleeps: 2 },
+      { name: 'Flamingo Suite', fromUsd: 850, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 709 998400'],
+      reservationsPhone: SERENA_RESERVATIONS,
+      email: 'elmenteita@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/elmenteita',
+    photo: 'roomHero',
+    gallery: ['giraffeAcaciaDusk', 'gardenLounge', 'lodgeBedroomLamps'],
+  },
+  {
+    slug: 'sweetwaters-serena-camp',
+    name: 'Sweetwaters Serena Camp',
+    type: 'Tented camp',
+    destination: 'Nanyuki',
+    area: 'Ol Pejeta Conservancy, Nanyuki',
+    summary: 'A tented camp inside Ol Pejeta Conservancy, with tents facing a waterhole.',
+    description:
+      'Sweetwaters Serena Camp is inside the Ol Pejeta Conservancy near Nanyuki, known for its rhino and chimpanzees. Waterhole-view tents let you watch wildlife from your veranda.',
+    highlights: ['Inside Ol Pejeta Conservancy', 'Waterhole-view tents', 'Rhino and chimpanzees nearby', 'Near Nanyuki'],
+    rooms: [
+      { name: 'Standard King Tent', fromUsd: 158, sleeps: 2 },
+      { name: 'Standard Tent Waterhole View', fromUsd: 186, sleeps: 2 },
+      { name: 'Morani Deluxe Tent', fromUsd: 318, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 734 699851'],
+      reservationsPhone: SERENA_RESERVATIONS,
+      email: 'sweetwaters@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/sweetwaters',
+    photo: 'mountainTerrace',
+    gallery: ['elephantSavanna', 'darkWoodSuite', 'giraffeAcaciaDusk'],
+  },
+  {
+    slug: 'kilaguni-serena-safari-lodge',
+    name: 'Kilaguni Serena Safari Lodge',
+    type: 'Safari lodge',
+    destination: 'Tsavo West',
+    area: 'Tsavo West National Park',
+    summary: 'A classic stone lodge in the heart of Tsavo West, looking over a waterhole.',
+    description:
+      'Kilaguni Serena is in the heart of Tsavo West National Park. Its classic stone design pairs with modern comforts, and the lodge looks over a waterhole that draws wildlife.',
+    highlights: ['Heart of Tsavo West National Park', 'Waterhole views', 'Classic stone design', 'Game drives'],
+    rooms: [
+      { name: 'Standard King Room', fromUsd: 212, sleeps: 2 },
+      { name: 'Deluxe King Room', fromUsd: 227, sleeps: 2 },
+      { name: 'Kilaguni Suite', fromUsd: 431, sleeps: 2 },
+    ],
+    contact: {
+      phones: ['+254 734 699865', '+254 734 699699'],
+      reservationsPhone: SERENA_RESERVATIONS,
+      email: 'kilaguni@serenahotels.com',
+    },
+    website: 'https://www.serenahotels.com/kilaguni',
+    photo: 'sunsetTerraceResort',
+    gallery: ['elephantSavanna', 'darkWoodSuite', 'giraffeAcaciaDusk'],
+  },
 ];
-
-// The four stays on the home page, in display order.
-export const featuredSlugs = [
-  'mara-horizon-tented-camp',
-  'diani-coral-beach-villa',
-  'amboseli-acacia-lodge',
-  'nairobi-skyline-hotel',
-];
-
-export const featuredStays: Stay[] = featuredSlugs.map((slug) => stays.find((s) => s.slug === slug)!);
 
 export function getStay(slug: string): Stay | undefined {
   return stays.find((s) => s.slug === slug);
 }
+
+export const fromUsd = (stay: Stay) => Math.min(...stay.rooms.map((r) => r.fromUsd));
+export const maxGuests = (stay: Stay) => Math.max(...stay.rooms.map((r) => r.sleeps));
+
+// The four stays on the home page, in display order.
+export const featuredSlugs = [
+  'mara-serena-safari-lodge',
+  'serena-beach-resort-spa',
+  'amboseli-serena-safari-lodge',
+  'nairobi-serena-hotel',
+];
+
+export const featuredStays: Stay[] = featuredSlugs.map((slug) => stays.find((s) => s.slug === slug)!);
 
 export const destinations = Array.from(
   stays.reduce((map, s) => map.set(s.destination, (map.get(s.destination) ?? 0) + 1), new Map<string, number>()),
@@ -174,4 +261,19 @@ export const destinations = Array.from(
 
 export function formatKes(amount: number): string {
   return `KES ${amount.toLocaleString('en-KE')}`;
+}
+
+export function formatUsd(amount: number): string {
+  const cents = Number.isInteger(amount) ? 0 : 2;
+  return `USD ${amount.toLocaleString('en-US', { minimumFractionDigits: cents, maximumFractionDigits: cents })}`;
+}
+
+/** Approximate KES for a USD price, rounded to the nearest 100. */
+export function approxKes(usd: number): number {
+  return Math.round((usd * KES_PER_USD) / 100) * 100;
+}
+
+/** Digits and leading +, for tel: links. */
+export function dialable(phone: string): string {
+  return phone.replace(/[^\d+]/g, '');
 }

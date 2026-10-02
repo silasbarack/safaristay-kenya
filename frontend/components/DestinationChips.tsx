@@ -7,9 +7,9 @@ import Reveal from './Reveal';
 const chips: { title: string; subtitle: string; destination: string; photo: PhotoKey }[] = [
   { title: 'Nairobi Hotels', subtitle: 'City stays & business', destination: 'Nairobi', photo: 'nairobiSkyline' },
   { title: 'Maasai Mara Lodges', subtitle: 'Iconic safari experiences', destination: 'Maasai Mara', photo: 'maraSafariSunset' },
-  { title: 'Diani Beach Resorts', subtitle: 'Coastal paradise', destination: 'Diani Beach', photo: 'oceanInfinityPool' },
-  { title: 'Amboseli Camps', subtitle: 'Views of Mount Kilimanjaro', destination: 'Amboseli', photo: 'amboseliKilimanjaro' },
-  { title: 'Naivasha Retreats', subtitle: 'Lakeside getaways', destination: 'Lake Naivasha', photo: 'giraffeAcaciaDusk' },
+  { title: 'Mombasa Beach Resorts', subtitle: 'Coastal paradise', destination: 'Mombasa', photo: 'thatchedBeachResort' },
+  { title: 'Amboseli Lodges', subtitle: 'Views of Mount Kilimanjaro', destination: 'Amboseli', photo: 'amboseliKilimanjaro' },
+  { title: 'Rift Valley Camps', subtitle: 'Lakes & flamingos', destination: 'Lake Elmenteita', photo: 'giraffeAcaciaDusk' },
 ];
 
 // Quick links into the stays list: a swipeable row on phones, five across on desktop.
