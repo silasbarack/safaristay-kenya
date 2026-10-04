@@ -1,7 +1,5 @@
 import clsx from 'clsx';
-import { photos, photoSrc } from '@/lib/photos';
 import type { Stay } from '@/lib/stays';
-import FadeImage from './FadeImage';
 
 type StayPhotoProps = {
   stay: Stay;
@@ -11,17 +9,18 @@ type StayPhotoProps = {
   imageClassName?: string;
 };
 
-// A stay's photo, cropped to fill its box, with its badge (or destination) on top.
-export default function StayPhoto({ stay, className, size = 'small', priority, imageClassName }: StayPhotoProps) {
-  const p = photos[stay.photo];
+// Property-specific listing photography supplied by the hotel's official site
+// or its official hospitality collection media. We deliberately use a native
+// image element so external hotel CDN URLs work without Next.js host allowlists.
+export default function StayPhoto({ stay, className, priority, imageClassName }: StayPhotoProps) {
   return (
     <div className={clsx('relative overflow-hidden bg-forest-100', className)}>
-      <FadeImage
-        src={photoSrc(p, size)}
-        alt={p.alt}
-        priority={priority}
-        sizes={size === 'large' ? '100vw' : '(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw'}
-        className={clsx('object-cover', imageClassName)}
+      <img
+        src={stay.officialPhotoUrl}
+        alt={stay.officialPhotoAlt}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
+        className={clsx('absolute inset-0 h-full w-full object-cover transition-transform duration-700', imageClassName)}
       />
       <span
         className={clsx(
@@ -30,6 +29,9 @@ export default function StayPhoto({ stay, className, size = 'small', priority, i
         )}
       >
         {stay.badge ?? stay.destination}
+      </span>
+      <span className="absolute bottom-2 left-2 right-12 rounded bg-black/55 px-2 py-1 text-[9px] leading-tight text-white/90">
+        Photo: {stay.photoCredit}
       </span>
     </div>
   );
