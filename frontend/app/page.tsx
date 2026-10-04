@@ -19,7 +19,7 @@ export default function HomePage() {
   return <>
     <section className="premium-hero" aria-labelledby="hero-heading">
       <div className="hero-photo">
-        <Image src="/photos/premium-safari-hero.webp" alt="Illustrative luxury safari veranda and infinity pool overlooking the savanna at sunset" fill priority sizes="(min-width: 1024px) 65vw, 100vw" className="object-cover" />
+        <img src="https://image-tc.galaxy.tf/wijpeg-uljpscbwhe9wiv6oxto8jou8/1-hotel-aerial-view-1.jpg" alt="Aerial view of Serena Beach Resort & Spa on Kenya's coast, with its pool, palm gardens and the Indian Ocean" className="absolute inset-0 h-full w-full object-cover" loading="eager" fetchPriority="high" />
         <span className="hero-photo-caption">A little closer to extraordinary.</span>
       </div>
       <div className="hero-copy">
