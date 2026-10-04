@@ -35,4 +35,4 @@ SafariStay is an independent hotel guide. Call links dial the hotel; email links
 
 ## Verification
 
-Run `npm ci`, `npm test`, `npm run lint` and `npm run build` inside `frontend/`. Tests cover guest-specific room pricing, invalid booking dates, package expiry and date/guest preservation in email drafts.
+Run `npm ci`, `npm test`, `npm run lint`, `npm run build` and then `npm run test:production` inside `frontend/`. Tests cover guest-specific room pricing, invalid booking dates, package expiry and date/guest preservation in email drafts. The production regression check verifies email URL encoding in the built homepage.

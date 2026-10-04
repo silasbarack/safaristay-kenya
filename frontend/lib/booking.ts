@@ -44,7 +44,7 @@ export function getResidentPackage(slug: string, checkin: string, checkout?: str
 
 /** Opens the visitor's email app; SafariStay does not send or confirm a booking. */
 export function enquiryHref(stay: Pick<Stay, 'name' | 'contact'>, query: BookingQuery): string {
-  const body = [
+  const encodedBody = [
     `Hello, I would like to enquire about a stay at ${stay.name}.`,
     '',
     `Arrival: ${query.checkin || 'Please advise'}`,
@@ -54,6 +54,7 @@ export function enquiryHref(stay: Pick<Stay, 'name' | 'contact'>, query: Booking
     'Please confirm availability, the room or resident package options, the total price, taxes, meals, park fees where applicable, and cancellation terms.',
     '',
     'Thank you.',
-  ].join('\r\n');
-  return `mailto:${stay.contact.email}?subject=${encodeURIComponent(`Stay enquiry: ${stay.name}`)}&body=${encodeURIComponent(body)}`;
+  // Join encoded lines so bundling cannot fold CRLF into a template's LF.
+  ].map(line => encodeURIComponent(line)).join('%0D%0A');
+  return `mailto:${stay.contact.email}?subject=${encodeURIComponent(`Stay enquiry: ${stay.name}`)}&body=${encodedBody}`;
 }

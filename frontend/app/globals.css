@@ -182,6 +182,10 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
   .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .detail-grid { gap: 30px; grid-template-columns: minmax(0, 1fr) 320px; }
 }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .search-form--hero { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .search-form--hero .booking-control select, .search-form--hero .booking-control input { font-size: 12px; }
+}
 @media (max-width: 1023px) {
   .desktop-nav, .header-plan, .account-link > span { display: none; }
   .header-inner { height: 92px; }
@@ -280,6 +284,11 @@ a, button, input, select { -webkit-tap-highlight-color: transparent; }
   .detail-room-table td, .detail-room-table th { padding: 13px 11px; }
   .detail-copy > h2 { font-size: 30px; }
   .resident-offer, .hotel-contact-panel { padding: 23px; }
+}
+
+@media (max-width: 480px) {
+  .search-form .booking-field { grid-column: 1 / -1; }
+  .booking-control select, .booking-control input { font-size: 16px; }
 }
 
 @layer base {
