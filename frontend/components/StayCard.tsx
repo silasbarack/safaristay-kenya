@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowUpRight, Mail, MapPin, Phone, Users } from 'lucide-react';
-import { dialable, formatKes, formatUsd, fromUsd, maxGuests, type Stay } from '@/lib/stays';
+import { dialable, formatKes, formatUsd, fromUsd, maxGuests, usdToKes, type Stay } from '@/lib/stays';
 import { enquiryHref, getResidentPackage, kenyaDate, type BookingQuery } from '@/lib/booking';
 import StayPhoto from './StayPhoto';
 
@@ -17,7 +17,7 @@ export default function StayCard({ stay, query = {} }: { stay: Stay; query?: Boo
       <p className="stay-category">{stay.type}</p><h3><Link href={href}>{stay.name}</Link></h3>
       <p className="stay-location"><MapPin size={14} aria-hidden />{stay.destination}<span>·</span><Users size={14} aria-hidden />Up to {maxGuests(stay)}</p>
       <p className="stay-summary">{stay.summary}</p>
-      <div className="stay-price"><span>Published room rate from</span><p>{usd === null ? 'Ask about room options' : formatUsd(usd)}<small>{usd !== null && ' / night'}</small></p></div>
+      <div className="stay-price"><span>Published room rate from</span><p>{usd === null ? 'Ask about room options' : formatUsd(usd)}<small>{usd !== null && ' / night'}</small></p>{usd !== null && <small className="mt-1 block">≈ {formatKes(usdToKes(usd))}</small>}</div>
       {offer && <div className="resident-price"><span>EA resident safari package</span><strong>{formatKes(offer.firstNightKes)}<small> / person · 1 night</small></strong></div>}
       <div className="stay-card-actions"><a href={`tel:${dialable(stay.contact.phones[0])}`} className="ss-btn-primary"><Phone size={15} aria-hidden />Call hotel</a><a href={enquiryHref(stay, query)} className="ss-btn-outline"><Mail size={15} aria-hidden />Enquire</a></div>
       <Link href={href} className="stay-details-link">Rooms, rates &amp; contact details <ArrowUpRight size={15} aria-hidden /></Link>
