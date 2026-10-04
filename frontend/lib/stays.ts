@@ -3,8 +3,8 @@
  *
  * Names, locations, phone numbers, emails and room rates come from each
  * hotel's official website (see `website`) and were last checked on
- * `RATES_CHECKED_ON`. Room rates are the hotel's own "from" prices in USD and
- * change daily; the KES figure is an approximate conversion. The photos are
+ * `RATES_CHECKED_ON`. Room rates are the hotel's own published "from" prices in USD.
+ * Date-limited KES resident packages are maintained separately in booking.ts. The photos are
  * stock images (see lib/photos.ts), not photos of these properties.
  * SafariStay is not affiliated with these hotels — guests book directly.
  *
@@ -51,10 +51,7 @@ export type Stay = {
   badge?: string;
 };
 
-export const RATES_CHECKED_ON = '2 October 2026';
-
-// Approximate rate used to show KES next to the hotels' USD prices.
-export const KES_PER_USD = 129;
+export const RATES_CHECKED_ON = '4 October 2026';
 
 const SERENA_RESERVATIONS = '+254 732 123333';
 
@@ -70,7 +67,7 @@ export const stays: Stay[] = [
       'Mara Serena sits in the Mara Triangle of the Maasai Mara National Reserve, overlooking the plains the great wildebeest migration crosses each year. It is a base for Big Five game drives, balloon safaris and Maasai cultural visits.',
     highlights: ['Wildebeest migration views', 'Big Five game drives', 'Balloon safaris', 'Maasai cultural visits'],
     rooms: [
-      { name: 'Standard Double Room', fromUsd: 377, sleeps: 2 },
+      { name: 'Standard King Room', fromUsd: 377, sleeps: 2 },
       { name: 'Standard Twin Room', fromUsd: 377, sleeps: 2 },
       { name: 'The Suite', fromUsd: 577, sleeps: 2 },
     ],
@@ -103,7 +100,7 @@ export const stays: Stay[] = [
       { name: 'Garden Suite', fromUsd: 620.5, sleeps: 2 },
     ],
     contact: {
-      phones: ['+254 733 584500', '+254 733 584501'],
+      phones: ['+254 732 125000', '+254 733 584500', '+254 733 584501'],
       email: 'mombasa@serenahotels.com',
     },
     website: 'https://www.serenahotels.com/serena-beach',
@@ -170,10 +167,10 @@ export const stays: Stay[] = [
     type: 'Tented camp',
     destination: 'Lake Elmenteita',
     area: 'Soysambu Conservancy, Nakuru',
-    summary: 'A five-star tented camp by Lake Elmenteita, ten minutes’ drive from Lake Nakuru National Park.',
+    summary: 'A boutique tented retreat on the shores of Lake Elmenteita in Soysambu Conservancy.',
     description:
-      'This tented camp stands in the Soysambu Conservancy beside Lake Elmenteita, about ten minutes’ drive from Lake Nakuru National Park. The lake draws flamingos and other birdlife.',
-    highlights: ['Beside Lake Elmenteita', '10 min to Lake Nakuru National Park', 'Birdwatching and flamingos', 'Deluxe tents'],
+      'Set beside Lake Elmenteita in Soysambu Conservancy, this intimate tented camp pairs classic safari interiors with lakeside views. Birdwatching, nature walks and a heated swimming pool make it a peaceful Rift Valley escape.',
+    highlights: ['Beside Lake Elmenteita', 'Soysambu Conservancy', 'Birdwatching and flamingos', 'Heated swimming pool'],
     rooms: [
       { name: 'Deluxe King Tent', fromUsd: 405, sleeps: 2 },
       { name: 'Deluxe Twin Tent', fromUsd: 405, sleeps: 2 },
@@ -242,7 +239,10 @@ export function getStay(slug: string): Stay | undefined {
   return stays.find((s) => s.slug === slug);
 }
 
-export const fromUsd = (stay: Stay) => Math.min(...stay.rooms.map((r) => r.fromUsd));
+export function fromUsd(stay: Pick<Stay, 'rooms'>, guests = 1): number | null {
+  const eligible = stay.rooms.filter((room) => room.sleeps >= guests);
+  return eligible.length ? Math.min(...eligible.map((room) => room.fromUsd)) : null;
+}
 export const maxGuests = (stay: Stay) => Math.max(...stay.rooms.map((r) => r.sleeps));
 
 // The four stays on the home page, in display order.
@@ -266,11 +266,6 @@ export function formatKes(amount: number): string {
 export function formatUsd(amount: number): string {
   const cents = Number.isInteger(amount) ? 0 : 2;
   return `USD ${amount.toLocaleString('en-US', { minimumFractionDigits: cents, maximumFractionDigits: cents })}`;
-}
-
-/** Approximate KES for a USD price, rounded to the nearest 100. */
-export function approxKes(usd: number): number {
-  return Math.round((usd * KES_PER_USD) / 100) * 100;
 }
 
 /** Digits and leading +, for tel: links. */

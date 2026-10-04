@@ -38,8 +38,8 @@ const config: Config = {
         line: '#e7e2d6',
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'Arial', 'sans-serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['Arial', 'Helvetica', 'sans-serif'],
+        serif: ['Times New Roman', 'Times', 'Georgia', 'serif'],
       },
       borderRadius: {
         card: '18px',

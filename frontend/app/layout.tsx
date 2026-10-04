@@ -1,13 +1,10 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import './globals.css';
 
-const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const serif = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-serif', display: 'swap' });
-
 export const metadata: Metadata = {
+  metadataBase: new URL('https://safaristay-kenya.onrender.com'),
   title: {
     default: 'SafariStay Kenya — Hotels, Lodges & Experiences',
     template: '%s · SafariStay Kenya',
@@ -21,11 +18,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+    <html lang="en">
       <body className="flex min-h-screen flex-col">
         {/* Scroll-reveal content starts hidden; keep it visible when JavaScript is off */}
         <noscript>
-          <style>{'.ss-reveal{opacity:1!important;transform:none!important}'}</style>
+          <style>{'.ss-reveal{opacity:1!important;transform:none!important}img.opacity-0{opacity:1!important;filter:none!important}.ss-skeleton{display:none!important}'}</style>
         </noscript>
         <Navbar />
         <main className="flex-1">{children}</main>

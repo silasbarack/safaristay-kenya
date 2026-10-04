@@ -1,44 +1,26 @@
 import Link from 'next/link';
-import { BedDouble, MapPin, Users } from 'lucide-react';
-import { approxKes, formatKes, formatUsd, fromUsd, maxGuests, type Stay } from '@/lib/stays';
+import { ArrowUpRight, Mail, MapPin, Phone, Users } from 'lucide-react';
+import { dialable, formatKes, formatUsd, fromUsd, maxGuests, type Stay } from '@/lib/stays';
+import { enquiryHref, getResidentPackage, kenyaDate, type BookingQuery } from '@/lib/booking';
 import StayPhoto from './StayPhoto';
 
-export default function StayCard({ stay }: { stay: Stay }) {
-  const usd = fromUsd(stay);
-  return (
-    <Link
-      href={`/stays/${stay.slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500"
-    >
-      <StayPhoto stay={stay} className="aspect-[4/3]" imageClassName="group-hover:scale-105" />
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <h3 className="font-serif text-lg font-semibold leading-snug text-ink group-hover:text-forest-700">{stay.name}</h3>
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-          <span className="flex items-center gap-1">
-            <BedDouble className="h-3.5 w-3.5" aria-hidden />
-            {stay.type}
-          </span>
-          <span className="flex items-center gap-1">
-            <Users className="h-3.5 w-3.5" aria-hidden />
-            Sleeps up to {maxGuests(stay)}
-          </span>
-        </div>
-        <p className="mt-2 flex items-center gap-1 text-xs text-muted">
-          <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
-          {stay.area}
-        </p>
-        <p className="mt-2 line-clamp-2 text-sm text-ink/75">{stay.summary}</p>
-        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-          <p className="leading-tight">
-            <span className="text-xs text-muted">From </span>
-            <span className="text-base font-bold text-ink">{formatUsd(usd)}</span>
-            <span className="block text-xs text-muted">≈ {formatKes(approxKes(usd))} / night</span>
-          </p>
-          <span className="shrink-0 rounded-lg bg-forest-900 px-3.5 py-2 text-xs font-semibold text-white transition group-hover:bg-forest-700">
-            View details
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
+export default function StayCard({ stay, query = {} }: { stay: Stay; query?: BookingQuery }) {
+  const usd = fromUsd(stay, Number(query.guests) || 1);
+  const offer = getResidentPackage(stay.slug, query.checkin || kenyaDate(), query.checkout);
+  const parameters = new URLSearchParams();
+  for (const key of ['checkin', 'checkout', 'guests'] as const) if (query[key]) parameters.set(key, query[key]!);
+  const href = `/stays/${stay.slug}${parameters.size ? `?${parameters}` : ''}`;
+
+  return <article className="stay-card">
+    <Link href={href} className="stay-card-image" aria-label={`View ${stay.name}`}><StayPhoto stay={stay} className="aspect-[4/3]" imageClassName="group-hover:scale-105" /><span className="stay-open"><ArrowUpRight size={20} aria-hidden /></span></Link>
+    <div className="stay-card-body">
+      <p className="stay-category">{stay.type}</p><h3><Link href={href}>{stay.name}</Link></h3>
+      <p className="stay-location"><MapPin size={14} aria-hidden />{stay.destination}<span>·</span><Users size={14} aria-hidden />Up to {maxGuests(stay)}</p>
+      <p className="stay-summary">{stay.summary}</p>
+      <div className="stay-price"><span>Published room rate from</span><p>{usd === null ? 'Ask about room options' : formatUsd(usd)}<small>{usd !== null && ' / night'}</small></p></div>
+      {offer && <div className="resident-price"><span>EA resident safari package</span><strong>{formatKes(offer.firstNightKes)}<small> / person · 1 night</small></strong></div>}
+      <div className="stay-card-actions"><a href={`tel:${dialable(stay.contact.phones[0])}`} className="ss-btn-primary"><Phone size={15} aria-hidden />Call hotel</a><a href={enquiryHref(stay, query)} className="ss-btn-outline"><Mail size={15} aria-hidden />Enquire</a></div>
+      <Link href={href} className="stay-details-link">Rooms, rates &amp; contact details <ArrowUpRight size={15} aria-hidden /></Link>
+    </div>
+  </article>;
 }

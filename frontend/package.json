@@ -9,7 +9,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "tsc lib/stays.ts lib/booking.ts --outDir .test-build --module commonjs --target es2020 --skipLibCheck && node --test tests/*.cjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

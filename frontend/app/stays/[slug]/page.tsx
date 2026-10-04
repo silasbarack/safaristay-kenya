@@ -1,175 +1,52 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, Check, ExternalLink, Mail, MapPin, MessageCircle, Phone, Users } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Check, ExternalLink, Mail, MapPin, Phone, Users } from 'lucide-react';
 import StayPhoto from '@/components/StayPhoto';
 import FadeImage from '@/components/FadeImage';
-import Reveal from '@/components/Reveal';
 import { photos, photoSrc } from '@/lib/photos';
-import {
-  RATES_CHECKED_ON,
-  approxKes,
-  dialable,
-  formatKes,
-  formatUsd,
-  fromUsd,
-  getStay,
-  maxGuests,
-  stays,
-} from '@/lib/stays';
+import { RATES_CHECKED_ON, dialable, formatKes, formatUsd, fromUsd, getStay, maxGuests, stays } from '@/lib/stays';
+import { enquiryHref, getResidentPackage, kenyaDate, validateSearch, type BookingQuery } from '@/lib/booking';
 
-export function generateStaticParams() {
-  return stays.map((s) => ({ slug: s.slug }));
-}
-
+export const revalidate = 3600;
+export function generateStaticParams() { return stays.map(stay => ({ slug: stay.slug })); }
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const stay = getStay(params.slug);
   return stay ? { title: stay.name, description: stay.summary } : {};
 }
 
-export default function StayPage({ params }: { params: { slug: string } }) {
+export default function StayPage({ params, searchParams }: { params: { slug: string }; searchParams: Record<string, string | string[] | undefined> }) {
   const stay = getStay(params.slug);
   if (!stay) notFound();
-
-  const usd = fromUsd(stay);
-  const { contact } = stay;
-  const enquiry = encodeURIComponent(`Booking enquiry: ${stay.name}`);
+  let query: BookingQuery = {};
+  for (const key of ['checkin', 'checkout', 'guests'] as const) if (typeof searchParams[key] === 'string') query[key] = searchParams[key] as string;
+  const error = validateSearch(query, kenyaDate());
+  if (error) query = {};
+  const guests = Number(query.guests) || 1;
+  const usd = fromUsd(stay, guests);
+  const offer = getResidentPackage(stay.slug, query.checkin || kenyaDate(), query.checkout);
   const host = new URL(stay.website).hostname.replace(/^www\./, '');
 
-  return (
-    <div className="ss-container py-10">
-      <Link href="/stays" className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-gold-700">
-        <ArrowLeft className="h-4 w-4" aria-hidden /> All stays
-      </Link>
-
-      {/* Main photo + two smaller ones from the stay's gallery */}
-      <div className="mt-4 grid animate-fade-in gap-3 sm:grid-cols-3 sm:grid-rows-2">
-        <StayPhoto stay={stay} size="large" priority className="aspect-[4/3] rounded-card sm:col-span-2 sm:row-span-2 sm:aspect-auto" />
-        {stay.gallery.slice(0, 2).map((key) => (
-          <div key={key} className="relative hidden aspect-[4/3] overflow-hidden rounded-card bg-forest-100 sm:block">
-            <FadeImage src={photoSrc(photos[key], 'small')} alt={photos[key].alt} sizes="33vw" className="object-cover" />
-          </div>
-        ))}
+  return <div className="premium-container py-8">
+    <Link href="/stays" className="text-link"><ArrowLeft size={16} aria-hidden />Back to the collection</Link>
+    <div className="detail-heading"><div><p className="premium-eyebrow">{stay.type}<span aria-hidden /></p><h1>{stay.name}</h1><div className="detail-meta"><span><MapPin size={15} aria-hidden />{stay.area}</span><span><Users size={15} aria-hidden />Rooms for up to {maxGuests(stay)} guests</span></div></div><a href={stay.website} target="_blank" rel="noopener noreferrer" className="ss-btn-outline">Official hotel website <ArrowUpRight size={18} aria-hidden /></a></div>
+    <div className="grid gap-3 sm:grid-cols-3 sm:grid-rows-2"><StayPhoto stay={stay} size="large" priority className="aspect-[4/3] rounded-lg sm:col-span-2 sm:row-span-2 sm:aspect-auto" />{stay.gallery.slice(0, 2).map(key => <div key={key} className="relative hidden aspect-[4/3] overflow-hidden rounded-lg bg-forest-100 sm:block"><FadeImage src={photoSrc(photos[key], 'small')} alt={photos[key].alt} sizes="33vw" className="object-cover" /></div>)}</div>
+    <p className="image-note">Illustrative editorial images. See the hotel&apos;s official website for photographs of this property.</p>
+    {error && <p role="alert" className="booking-error mt-4">{error} Contact the hotel to confirm your travel dates.</p>}
+    <div className="detail-grid">
+      <div className="detail-copy"><p>{stay.description}</p><h2>The experience</h2><ul className="mt-5 grid gap-3 sm:grid-cols-2">{stay.highlights.map(item => <li key={item} className="flex items-start gap-3 text-sm text-muted"><Check size={17} className="shrink-0 text-gold-600" aria-hidden />{item}</li>)}</ul>
+        <h2>Rooms &amp; published rates</h2><div className="detail-room-table"><table className="w-full text-left"><thead><tr><th>Room</th><th className="hidden sm:table-cell">Guests</th><th className="text-right">From / night</th></tr></thead><tbody>{stay.rooms.map(room => <tr key={room.name}><td>{room.name}<small className="mt-1 block text-[10px] text-muted">Up to {room.sleeps} guests{room.sleeps < guests ? ' · Smaller than your party' : ''}</small></td><td className="hidden sm:table-cell">{room.sleeps}</td><td className="whitespace-nowrap text-right font-medium">{formatUsd(room.fromUsd)}</td></tr>)}</tbody></table></div>
+        <p className="rate-note">Starting room prices published by {host}, checked {RATES_CHECKED_ON}. The hotel confirms your occupancy, meal plan, taxes and final rate for your dates. <a href={stay.website} target="_blank" rel="noopener noreferrer" className="underline">View the source.</a></p>
+        {offer && <section className="resident-offer"><p className="premium-eyebrow">East African residents<span aria-hidden /></p><h3>A safari, thoughtfully packaged</h3><div className="offer-prices"><div><strong>{formatKes(offer.firstNightKes)}</strong><span>First night · per person</span></div><div><strong>{formatKes(offer.extraNightKes)}</strong><span>Extra night · per person</span></div></div><p>Published for stays from 1 October to 22 December 2026. Includes full-board accommodation, two game drives and standard transfers. Proof of residency is required.</p><p>Park entrance fees are excluded. Some room and transfer supplements apply. Subject to availability and the hotel&apos;s terms.</p><a href={offer.source} target="_blank" rel="noopener noreferrer">View the official offer and all terms <ExternalLink size={14} aria-hidden /></a></section>}
+        <h2>Make the most of your stay</h2><p className="mt-3">Before reserving, ask about your preferred room, transfers, included meals and cancellation terms. Safari stays may have separate park or conservancy fees.</p><a href={`https://www.google.com/maps/search/?${new URLSearchParams({ api: '1', query: `${stay.name}, ${stay.area}, Kenya` })}`} target="_blank" rel="noopener noreferrer" className="text-link mt-3">View location on Google Maps <ArrowUpRight size={17} aria-hidden /></a>
       </div>
-      <p className="mt-2 text-xs text-muted">Illustrative photos — not of this property.</p>
-
-      <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_360px]">
-        <div>
-          <p className="ss-eyebrow">{stay.type}</p>
-          <h1 className="mt-2 font-serif text-3xl font-semibold text-ink sm:text-4xl">{stay.name}</h1>
-          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
-            <span className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" aria-hidden /> {stay.area}
-            </span>
-            <span className="flex items-center gap-1">
-              <Users className="h-4 w-4" aria-hidden /> Rooms for up to {maxGuests(stay)} guests
-            </span>
-          </div>
-          <p className="mt-6 text-base leading-relaxed text-ink/85">{stay.description}</p>
-
-          <h2 className="mt-10 font-serif text-2xl font-semibold text-ink">Highlights</h2>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-            {stay.highlights.map((h) => (
-              <li key={h} className="flex items-center gap-2 text-sm">
-                <Check className="h-4 w-4 text-forest-600" aria-hidden /> {h}
-              </li>
-            ))}
-          </ul>
-
-          <Reveal>
-            <h2 className="mt-10 font-serif text-2xl font-semibold text-ink">Rooms &amp; rates</h2>
-            <div className="mt-4 overflow-hidden rounded-card border border-line bg-white">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-sand text-xs uppercase tracking-wide text-muted">
-                  <tr>
-                    <th className="px-4 py-3 font-semibold">Room</th>
-                    <th className="hidden px-4 py-3 font-semibold sm:table-cell">Sleeps</th>
-                    <th className="px-4 py-3 text-right font-semibold">From / night</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {stay.rooms.map((r) => (
-                    <tr key={r.name}>
-                      <td className="px-4 py-3">
-                        <span className="font-medium text-ink">{r.name}</span>
-                        <span className="block text-xs text-muted sm:hidden">Sleeps {r.sleeps}</span>
-                      </td>
-                      <td className="hidden px-4 py-3 text-muted sm:table-cell">{r.sleeps}</td>
-                      <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-ink">{formatUsd(r.fromUsd)}</span>
-                        <span className="block text-xs text-muted">≈ {formatKes(approxKes(r.fromUsd))}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-2 text-xs text-muted">
-              Rates are the hotel&apos;s own &ldquo;from&rdquo; prices on {host}, checked {RATES_CHECKED_ON}. They change daily;
-              KES amounts are approximate.
-            </p>
-          </Reveal>
-        </div>
-
-        <aside className="h-fit rounded-card border border-line bg-white p-6 shadow-card lg:sticky lg:top-28">
-          <p className="text-sm text-muted">From</p>
-          <p>
-            <span className="text-2xl font-semibold text-ink">{formatUsd(usd)}</span>
-            <span className="text-sm text-muted"> / night</span>
-          </p>
-          <p className="text-sm text-muted">≈ {formatKes(approxKes(usd))}</p>
-
-          <h2 className="mt-6 text-sm font-semibold text-ink">Book directly with the hotel</h2>
-          <div className="mt-3 space-y-2">
-            {contact.whatsapp && (
-              <a
-                href={`https://wa.me/${dialable(contact.whatsapp).replace('+', '')}?text=${enquiry}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ss-btn-primary w-full bg-[#1f7a46] py-3 hover:bg-[#186338]"
-              >
-                <MessageCircle className="h-4 w-4" aria-hidden /> WhatsApp {contact.whatsapp}
-              </a>
-            )}
-            {contact.phones.map((phone, i) => (
-              <a
-                key={phone}
-                href={`tel:${dialable(phone)}`}
-                className={i === 0 ? 'ss-btn-primary w-full py-3' : 'flex w-full items-center justify-center gap-2 rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-forest-700'}
-              >
-                <Phone className="h-4 w-4" aria-hidden /> Call {phone}
-              </a>
-            ))}
-            <a
-              href={`mailto:${contact.email}?subject=${enquiry}`}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-forest-700"
-            >
-              <Mail className="h-4 w-4" aria-hidden /> {contact.email}
-            </a>
-          </div>
-
-          {contact.reservationsPhone && (
-            <p className="mt-4 text-xs text-muted">
-              Central reservations:{' '}
-              <a href={`tel:${dialable(contact.reservationsPhone)}`} className="font-medium text-ink underline hover:text-gold-700">
-                {contact.reservationsPhone}
-              </a>
-            </p>
-          )}
-          <a
-            href={stay.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-forest-900 hover:text-gold-700"
-          >
-            Official website: {host} <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-          </a>
-          <p className="mt-4 border-t border-line pt-4 text-xs text-muted">
-            Contact details are from the hotel&apos;s official website. SafariStay isn&apos;t affiliated with the hotel —
-            you book and pay with the hotel directly.
-          </p>
-        </aside>
-      </div>
+      <aside className="hotel-contact-panel"><p className="premium-eyebrow">Make it happen<span aria-hidden /></p><h2 className="mt-3">Speak with the hotel</h2><div className="stay-price mt-5"><span>Published room rate from</span><p>{usd === null ? 'Ask about multiple rooms' : formatUsd(usd)}<small>{usd !== null && ' / night'}</small></p></div>
+        {query.checkin && <p className="rate-note">Your enquiry: {query.checkin} to {query.checkout}{query.guests && ` · ${query.guests} guests`}.</p>}
+        <div className="mt-5">{stay.contact.phones.map((phone, index) => <a key={phone} href={`tel:${dialable(phone)}`} className={index === 0 ? 'ss-btn-primary' : 'ss-btn-outline'}><Phone size={16} aria-hidden />{phone}</a>)}</div>
+        <a href={enquiryHref(stay, query)} className="ss-btn-outline"><Mail size={16} aria-hidden />Prepare an email enquiry</a><a href={enquiryHref(stay, query)} className="hotel-email">{stay.contact.email}</a>
+        {stay.contact.reservationsPhone && <p className="rate-note">Central reservations: <a href={`tel:${dialable(stay.contact.reservationsPhone)}`} className="underline">{stay.contact.reservationsPhone}</a></p>}
+        <a href={stay.website} target="_blank" rel="noopener noreferrer" className="text-link mt-3">Check rates on the official site <ExternalLink size={14} aria-hidden /></a><p className="contact-panel-note">Confirm availability and the total price with the hotel. Reservations and payments are handled directly by the hotel. SafariStay is an independent guide.</p>
+      </aside>
     </div>
-  );
+  </div>;
 }
