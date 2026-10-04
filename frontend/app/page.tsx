@@ -25,7 +25,7 @@ export default function HomePage() {
       <div className="hero-copy">
         <p className="premium-eyebrow">Kenya, beautifully experienced<span aria-hidden /></p>
         <h1 id="hero-heading" className="hero-title"><span>Extraordinary stays.</span><span>Exceptional journeys.</span></h1>
-        <p className="hero-description">Discover refined city hotels, intimate safari retreats and unforgettable coastal escapes.</p>
+        <p className="hero-description">Discover 10 handpicked Kenyan stays — refined Nairobi hotels, intimate safari retreats and unforgettable Indian Ocean escapes — with direct hotel contacts and transparent starting rates.</p>
         <div className="hero-actions">
           <Link href="#destinations" className="ss-btn-primary">Explore the collection <ArrowRight size={19} aria-hidden /></Link>
           <Link href="#hotel-contacts" className="ss-btn-outline">Speak to a hotel <Phone size={18} aria-hidden /></Link>
@@ -48,7 +48,7 @@ export default function HomePage() {
           <span className="collection-arrow"><ArrowRight size={23} aria-hidden /></span>
         </Link>)}
       </div>
-      <p className="image-note">Editorial images are illustrative. View the hotel&apos;s official website for property photographs.</p>
+      <p className="image-note">Collection imagery is editorial; every hotel listing below now uses property-specific photography.</p>
     </section>
 
     <section className="premium-container assurance-strip" aria-label="How to book">
@@ -59,11 +59,11 @@ export default function HomePage() {
 
     <section id="featured" className="premium-container section-space scroll-mt-32">
       <div className="section-heading">
-        <div><p className="premium-eyebrow">Places worth discovering<span aria-hidden /></p><h2>Remarkable stays, real possibilities</h2><p className="section-intro">Explore published room rates and East African resident packages, then enquire directly.</p></div>
+        <div><p className="premium-eyebrow">10 places worth discovering<span aria-hidden /></p><h2>Remarkable stays, real possibilities</h2><p className="section-intro">Compare hotel starting rates in dollars with approximate KES equivalents, see property-specific photography, then enquire directly with the hotel.</p></div>
         <Link href="/stays" className="text-link">Explore all hotels <ArrowRight size={19} aria-hidden /></Link>
       </div>
       <div className="featured-grid">{featuredStays.map(stay => <StayCard key={stay.slug} stay={stay} />)}</div>
-      <p className="rate-note">Rates and contacts checked {RATES_CHECKED_ON}. Starting prices vary with dates, occupancy and availability. KES packages are per person; USD room rates are shown separately.</p>
+      <p className="rate-note">Rates and contacts checked {RATES_CHECKED_ON}. Dollar room rates include an approximate KES equivalent at $1 = KES 129.76 for comparison. Final hotel pricing varies with dates, occupancy, taxes and availability.</p>
     </section>
 
     <section id="our-story" className="story-section scroll-mt-32">
